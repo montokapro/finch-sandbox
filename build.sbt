@@ -1,6 +1,7 @@
 val finchVersion = "0.26.0"
 val circeVersion = "0.10.1"
 val scalatestVersion = "3.0.5"
+val caffeineVersion = "0.28.0"
 
 lazy val root = (project in file("."))
   .settings(
@@ -12,6 +13,8 @@ lazy val root = (project in file("."))
       "com.github.finagle" %% "finchx-core"  % finchVersion,
       "com.github.finagle" %% "finchx-circe"  % finchVersion,
       "io.circe" %% "circe-generic" % circeVersion,
-      "org.scalatest" %% "scalatest" % scalatestVersion % "test"
+      "org.scalatest" %% "scalatest" % scalatestVersion % "test",
+      "com.github.cb372" %% "scalacache-caffeine" % caffeineVersion,
+      "com.github.cb372" %% "scalacache-cats-effect" % caffeineVersion
     )
   )

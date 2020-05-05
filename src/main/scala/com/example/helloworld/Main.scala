@@ -9,10 +9,12 @@ import io.finch._
 import io.finch.catsEffect._
 import io.finch.circe._
 import io.circe.generic.auto._
+import com.twitter.util.Memoize
 
 object Main extends App {
   val logService = new LogService
   val counterService = new CounterService
+  val memoizeService = new MemoizeService
 
   case class Message(hello: String)
 
@@ -32,6 +34,14 @@ object Main extends App {
     logService.log(s).map(Ok)
   }
 
+  def uppercase: Endpoint[IO, String] = get("uppercase" :: path[String]) { s: String =>
+    memoizeService.uppercase(s).map(Ok)
+  }
+
+  def lowercase: Endpoint[IO, String] = get("lowercase" :: path[String]) { s: String =>
+    memoizeService.lowercase(s).map(Ok)
+  }
+
   def inc(counter: Ref[IO, Int]): Endpoint[IO, String] = get("inc") {
     counterService.inc(counter).map(_.toString).map(Ok)
   }
@@ -40,7 +50,7 @@ object Main extends App {
     counter <- counterService.counter
   } yield {
     val service = Bootstrap
-      .serve[Text.Plain](healthcheck :+: log :+: inc(counter))
+      .serve[Text.Plain](healthcheck :+: log :+: uppercase :+: lowercase :+: inc(counter))
       .serve[Application.Json](helloWorld :+: hello)
       .toService
 
