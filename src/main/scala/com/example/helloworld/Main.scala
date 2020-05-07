@@ -12,10 +12,6 @@ import io.circe.generic.auto._
 import com.twitter.util.Memoize
 
 object Main extends App {
-  val logService = new LogService
-  val counterService = new CounterService
-  val memoizeService = new MemoizeService
-
   case class Message(hello: String)
 
   def healthcheck: Endpoint[IO, String] = get(pathEmpty) {
@@ -31,23 +27,23 @@ object Main extends App {
   }
 
   def log: Endpoint[IO, String] = get("log" :: path[String]) { s: String =>
-    logService.log(s).map(Ok)
+    LogService.log(s).map(Ok)
   }
 
   def uppercase: Endpoint[IO, String] = get("uppercase" :: path[String]) { s: String =>
-    memoizeService.uppercase(s).map(Ok)
+    MemoizeService.uppercase(s).map(Ok)
   }
 
   def lowercase: Endpoint[IO, String] = get("lowercase" :: path[String]) { s: String =>
-    memoizeService.lowercase(s).map(Ok)
+    MemoizeService.lowercase(s).map(Ok)
   }
 
   def inc(counter: Ref[IO, Int]): Endpoint[IO, String] = get("inc") {
-    counterService.inc(counter).map(_.toString).map(Ok)
+    CounterService.inc(counter).map(_.toString).map(Ok)
   }
 
   val server = for {
-    counter <- counterService.counter
+    counter <- CounterService.counter
   } yield {
     val service = Bootstrap
       .serve[Text.Plain](healthcheck :+: log :+: uppercase :+: lowercase :+: inc(counter))

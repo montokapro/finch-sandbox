@@ -15,4 +15,16 @@ class MainTest extends FunSuite {
   test("hello") {
     assert(Main.hello(Input.get("/hello/foo")).awaitValueUnsafe() == Some(Main.Message("foo")))
   }
+
+  test("log") {
+    assert(Main.log(Input.get("/log/message")).awaitValueUnsafe() == Some("message"))
+  }
+
+  test("uppercase") {
+    assert(Main.uppercase(Input.get("/uppercase/upper")).awaitValueUnsafe() == Some("UPPER"))
+  }
+
+  test("lowercase") {
+    assert(Main.lowercase(Input.get("/lowercase/LOWER")).awaitValueUnsafe() == Some("lower"))
+  }
 }

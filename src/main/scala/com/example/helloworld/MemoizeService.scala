@@ -8,7 +8,7 @@ import scalacache.caffeine._
 import scalacache.memoization._
 import scalacache.Mode
 
-class MemoizeService {
+object MemoizeService {
   implicit val cache: Cache[String] = CaffeineCache[String]
   implicit val mode: Mode[IO] = scalacache.CatsEffect.modes.async
 
